@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>paloblancogames</title><link href="/" rel="alternate"></link><link href="/feeds/all-english.atom.xml" rel="self"></link><id>/</id><updated>2019-03-30T12:20:00-05:00</updated><entry><title>My super title</title><link href="/my-first-post.html" rel="alternate"></link><published>2019-03-30T12:20:00-05:00</published><updated>2019-03-30T12:20:00-05:00</updated><author><name>Palo Blanco</name></author><id>tag:None,2019-03-30:/my-first-post.html</id><summary type="html">&lt;p&gt;The first post on my page&lt;/p&gt;</summary><content type="html">&lt;h1&gt;My first post&lt;/h1&gt;
-&lt;p&gt;This is my first post. Wow!&lt;/p&gt;
-&lt;p&gt;Here is my twitter icon!&lt;/p&gt;
-&lt;p&gt;&lt;img alt="This should be the doba" src="/images/doba.png"&gt;&lt;/p&gt;</content><category term="pelican"></category><category term="publishing"></category></entry></feed>
