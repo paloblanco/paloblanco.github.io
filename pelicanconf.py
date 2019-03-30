@@ -7,6 +7,7 @@ SITENAME = 'paloblancogames'
 SITEURL = ''
 
 PATH = 'content'
+THEME = "../pelican-themes/pelican-blue"
 
 STATIC_PATHS = ['images']
 
@@ -16,8 +17,8 @@ DEFAULT_LANG = 'English'
 
 # Feed generation is usually not desired when developing
 # FEED_ALL_ATOM = None
-# CATEGORY_FEED_ATOM = None
-# TRANSLATION_FEED_ATOM = None
+CATEGORY_FEED_ATOM = None
+TRANSLATION_FEED_ATOM = None
 # AUTHOR_FEED_ATOM = None
 # AUTHOR_FEED_RSS = None
 
@@ -35,6 +36,11 @@ LINKS = (('Pelican', 'http://getpelican.com/'),
 # Social widget
 SOCIAL = (('You can add links in your config file', '#'),
           ('Another social link', '#'),)
+
+# SOCIAL = (('linkedin', 'https://www.linkedin.com/in/username'),
+#           ('github', 'https://github.com/username'),
+#           ('twitter', 'https://twitter.com/username'),
+#           )
 
 DEFAULT_PAGINATION = 10
 

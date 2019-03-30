@@ -12,4 +12,4 @@ This is my first post. Wow!
 
 Here is my twitter icon!
 
-![This should be the doba]({filename}/images/doba.png)
+![This should be the doba]({static}/images/doba.png)
