@@ -8,16 +8,23 @@ SITEURL = ''
 
 PATH = 'content'
 
+STATIC_PATHS = ['images']
+
 TIMEZONE = 'America/Cancun'
 
 DEFAULT_LANG = 'English'
 
 # Feed generation is usually not desired when developing
-FEED_ALL_ATOM = None
-CATEGORY_FEED_ATOM = None
-TRANSLATION_FEED_ATOM = None
-AUTHOR_FEED_ATOM = None
-AUTHOR_FEED_RSS = None
+# FEED_ALL_ATOM = None
+# CATEGORY_FEED_ATOM = None
+# TRANSLATION_FEED_ATOM = None
+# AUTHOR_FEED_ATOM = None
+# AUTHOR_FEED_RSS = None
+
+FEED_ALL_ATOM = 'feeds/all.atom.xml'
+FEED_ALL_RSS = 'feeds/all.rss.xml'
+AUTHOR_FEED_RSS = 'feeds/%s.rss.xml'
+RSS_FEED_SUMMARY_ONLY = False
 
 # Blogroll
 LINKS = (('Pelican', 'http://getpelican.com/'),
