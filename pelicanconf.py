@@ -7,7 +7,7 @@ SITENAME = 'paloblancogames'
 SITEURL = ''
 
 PATH = 'content'
-THEME = "../pelican-themes/pelican-blue"
+THEME = "../pelican-themes/voidy-bootstrap"
 
 STATIC_PATHS = ['images']
 
@@ -17,8 +17,8 @@ DEFAULT_LANG = 'English'
 
 # Feed generation is usually not desired when developing
 # FEED_ALL_ATOM = None
-CATEGORY_FEED_ATOM = None
-TRANSLATION_FEED_ATOM = None
+# CATEGORY_FEED_ATOM = None
+# TRANSLATION_FEED_ATOM = None
 # AUTHOR_FEED_ATOM = None
 # AUTHOR_FEED_RSS = None
 
@@ -46,3 +46,22 @@ DEFAULT_PAGINATION = 10
 
 # Uncomment following line if you want document-relative URLs when developing
 #RELATIVE_URLS = True
+
+SITESUBTITLE ='Data science, visualization, and games.'
+SITETAG = "paloblanco."
+
+# Extra stylesheets, for bootstrap overrides or additional styling.
+STYLESHEET_FILES = ("pygment.css", "voidybootstrap.css",)
+
+# Put taglist at end of articles, and use the default sharing button implementation.
+CUSTOM_ARTICLE_FOOTERS = ("taglist.html", "sharing.html", )
+CUSTOM_SCRIPTS_ARTICLE = "sharing_scripts.html"
+
+# Default sidebar template. Omit this setting for single column mode without sidebar.
+SIDEBAR = "sidebar.html"
+
+SOCIAL = (('Twitter', 'https://twitter.com/paloblancogames',
+         'fa fa-twitter-square fa-fw fa-lg'),
+        ('GitHub', 'http://github.com/paloblanco',
+         'fa fa-github-square fa-fw fa-lg'),
+        )
