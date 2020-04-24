@@ -1,2 +1,2 @@
 # Rocco's personal page
-Personal page set up for Rocc. Plan is to use markdeep.
+Personal page set up for Rocco. Plan is to use markdeep.
