@@ -1,6 +1,7 @@
                                 **Covid-19 Research for Ohio**
 
 *First published: May 17, 2020*
+*Added Ohio plots: May 31, 2020*
 
 # Summary
 I am trying to put together some notes and resources regarding the potential risks of covid-19. As the United States begins to roll back stay-at-home orders and business closures, I would like to have a data-driven understanding of what the realistic risks are to my family. The primary questions I am trying to answer are:
@@ -60,3 +61,17 @@ Some notes on the above table:
 - Overall, hospitalization rates are fairly low, with a 3 in 10,000 chance of being hospitalized for 18-44 year olds
 
 I am still working on this analysis, so I do not plan to make any conclusions yet. I think a good companion piece to the second data table would be a comparison of available numbers for the flu and pneumonia. That is, if we ASSUME you definitely have the flu, what are the chances you will be hospitalized? Asymptomatic?
+
+## Updates: Some visuals
+
+By getting raw data from the Ohio Covid dashboard, I made some quick plots of age-related covid data for the entire state. Unfortunately, Ohio does not publish rates of pre-existing conditions for covid patients - I am still searching for these.
+
+Some important notes for these data:
+1. Ohio's population is about 11 million
+2. About 60% of the population is under the age of 40 - median age is 36.
+
+![Hospitalizations by date](hospital_ohio_covid.png)
+![Deaths by date](death_ohio_covid.png)
+![Cases by date](case_ohio_covid.png)
+
+Hospitalizations and deaths trend heavily towards older Ohioans. Case count is actually close for both, but it is difficult to case count as a metric, since it is largely driven by more testing being available.
