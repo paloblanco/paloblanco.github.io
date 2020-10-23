@@ -3,6 +3,7 @@
 *First published: May 17, 2020*
 *Added Ohio plots: May 31, 2020*
 
+
 # Summary
 I am trying to put together some notes and resources regarding the potential risks of covid-19. As the United States begins to roll back stay-at-home orders and business closures, I would like to have a data-driven understanding of what the realistic risks are to my family. The primary questions I am trying to answer are:
 
