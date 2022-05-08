@@ -1,0 +1,673 @@
+<h1>The worst US States for getting stuck in traffic from accidents and construction.</h1>
+<p><img alt="RoadRage!" class="center" src="car_assets/roadrage.bmp" /></p>
+<p>I have long been interested in the experiences of driving across the United States. Almost everyone I have met in the United States has their own anecdotes about how bad certain states are for drivers. </p>
+<ul>
+<li>"There is so much construction in Pennsylvania!"</li>
+<li>"Arizona drivers are reckless!"</li>
+<li>"Jersey drivers are THE WORST."</li>
+</ul>
+<p>I decided to pull data that are available to me for a slightly tongue-in-cheek exercise to determine which US states actually are most unpleasant for drivers. There are several major factors that come to mind when considering "unpleasantness for drivers":</p>
+<ol>
+<li>Traffic</li>
+<li>Construction (related to traffic)</li>
+<li>Accidents (related to traffic)</li>
+<li>Difficulty of driving (rough roads, poorly signed roads, single-lane roads)</li>
+</ol>
+<p>Traffic is the single biggest item. I don't think anyone would argue that commuting by car in San Francisco or New York City is pleasant. However, this is difficult to quantify across the entire US - in addition to requiring some measure of the speed of traffic flow, we would also need average trip lengths across the country to make a meaningful comparison. Additionally, when browsing Kaggle and the internet in general, I was unable to find a reaonably accessible dataset that would allow me to quantify the concept of "traffic."</p>
+<p>I think most people would agree, though, that the presence of road construction and accidents both contribute to negative driving experiences. Especially when considering long distance driving, where a driver may cross multiple state boundaries, accident and construction frequency may be a better indicator of driving experiences than commuting traffic around major metropolitan areas. Personally, I have had several jobs that regularly required me to drive several hundred miles regularly, and I developed plenty of anecdotal assumptions while doing so (Ohio is OK, Pennsylvania is bad for construction, DC is bad for accidents, etc.). Lastly, I am interested in comparing US states against eachother; what is it like for a driver who is "just passing through?" I also think there is some fun to be had in a sports-like fashion by using states as the unit of comparison. I have a major grudge against Pennsylvania for the amount of traffic I have incurred on my many drives from Pittsburgh to Philadelphia, and I will try not to let this affect my judgement while conducting this analysis.</p>
+<h2>Data</h2>
+<p>I was able to find two interesting datasets being hosted on Kaggle that pertain to accidents and construction, respectively:</p>
+<ul>
+<li><a href="https://www.kaggle.com/datasets/sobhanmoosavi/us-accidents?datasetId=199387&amp;sortBy=voteCount">US Accidents (2016 - 2021)</a></li>
+<li><a href="https://www.kaggle.com/datasets/sobhanmoosavi/us-road-construction-and-closures">US Road Construction and Closures (2016 - 2021) | Kaggle</a></li>
+</ul>
+<p>These have been assembled and gratiously provided by Sobhan Moosavi and their research team:</p>
+<ul>
+<li>Moosavi, Sobhan, Mohammad Hossein Samavatian, Srinivasan Parthasarathy, and Rajiv Ramnath. “A Countrywide Traffic Accident Dataset.”, 2019.</li>
+</ul>
+<p>Already, we can imagine simply comparing the frequency of accidents and construction (hereafter called "traffic events") across states. However, such a comparison would not be very fair if we did not account for the size of a state; we would obviously expect California to have more roads than Rhode Island, and so simply comparing their absolute number of traffic events is not fair. The Federal Highway Administration provides a yearly report on the number and length of roads across the United States - we can use this to normalize our traffic event counts, and we can even compare highway vs freeway events as well as urban vs rural roads:</p>
+<ul>
+<li><a href="https://www.fhwa.dot.gov/policyinformation/statistics/2020/hm60.cfm">Table HM-60 - Highway Statistics 2020 - Policy | Federal Highway Administration (dot.gov)</a></li>
+</ul>
+<p>Finally, and this is especially for fun and some light ribbing, I was able to easily locate the US Federal Transportaion Administration's yearly funding allotment to each state. I am very curious about comparing the "least-pleasant" states for driving with the amount of federal funding they receive:</p>
+<ul>
+<li><a href="https://www.transit.dot.gov/funding/grants/fta-allocations-formula-and-discretionary-programs-state-fy-1998-2022-full-year">FTA Allocations for Formula and Discretionary Programs by State FY 1998-2022 Full Year | FTA (dot.gov)</a></li>
+</ul>
+<h2>Specific questions I plan to answer in this analysis</h2>
+<p>Using the data I have been able to collect, I plan to try and answer the following questions:</p>
+<ol>
+<li>When we normalize for the amount of roads, which states exhibit the highest frequency of traffic events? The lowest?</li>
+<li>Is there a significant difference in highway vs non-highway traffic event occurrence? Do states which fair poorly in one category also fair poorly in the other?</li>
+<li>Does accident frequency correlate to construction frequency? Do these correlate in some states but not others?</li>
+<li>Generally speaking, is there a correlation between the amount of funding a state receives and the amount of construction which occurs? Do accidents have any correlation with funding?</li>
+</ol>
+<h2>Some notes on how this analysis was conducted.</h2>
+<p>I used the python programming language to import and analyze thesse data. If you wish to follow along yourself, you can find everything you would need to get started <a href="linktorepo">here</a>. There are a few things worth pointing out about the data I am looking at, without being too detailed:</p>
+<ol>
+<li>I am only summarizing data from 2021. The collectors of these data have been compiling it yearly since 2017, using a variety of different digital sources. Their collection methods have gotten better each year, meaning that more accidents and construction events have been captured each year. I cannot do a year-over-year trend accurately, since this would be skewed by the improvements in data collection. As such, we are only going to look at 2021 data.</li>
+<li>I had trouble finding data for Alaska and Hawaii, so we will only consider the 48 contiguous states, as well as Washington D.C.</li>
+<li>I had to make some assumptions about what constitutes a highway, and what is a surface-street (non-highway). This is an imperfect activity, mostly based on the names of the roads (eg, "I-95" is probably a highway, while "Brown Street" is probably not a highway). Still, given the thumb-in-the-wind style of this analysis, I think it is sufficient.</li>
+</ol>
+<p>With that said, let's begin!</p>
+<h2>1. When we normalize for the amount of roads, which states exhibit the highest frequency of traffic events? The lowest?</h2>
+<p>We can start by comparing the total counts of traffic events (defined as accidents plus construction events) across each state through 2021. We will not yet take the SIZE of a state into account - let's just look at total numbers to get started:</p>
+<p><img alt="Total Counts of Events" src="car_assets/TotalTrafficEvents.png" /></p>
+<p><em>Total count of traffic events by states in 2021</em></p>
+<p>This plot is meant to be a reality check that my methodology makes sense. The above looks correct for absolute values - big states lead the way. Also, LOL at Pennsylvania ranking just behind Texas for absolute counts. </p>
+<p>To really get a feel for "unpleasantness," we should normalize by the amount of roads a state has. By using data from the US government, I can normalize the above values to "events per 100 miles of lane." Let's see how it looks when we do so.</p>
+<p><img alt="Total Events per 100 miles road" src="car_assets/TotalTrafficEvents100.png" /></p>
+<p><em>Traffic event occurence per 100 imles of road by state in 2021</em></p>
+<p>Interesting! Some important notes:</p>
+<ol>
+<li>This is just for 2021.</li>
+<li>This is the number of events per 100 miles of LANE. So, your average two-way road counts for 2 lanes, so a 1 mile stretch of road is "2 miles of lane". This means that, generally, states which have more lanes (more 4 lane highways) will appear to have a smaller amount of accidents per 100 miles. I have decided NOT to adjust this, since I am trying to measure "unpleasantness of driving," and I think states deserve a reqard for having more lanes.</li>
+</ol>
+<p>That being said, a big state like New York has about 75 events per year per 100 miles of two lane road. That... sounds reasonable, I think. Between fender benders and construction, I really think this sounds about right. This is almost CERTAINLY weighted heavily by more traveled roads, but I think this is a nice first swing.</p>
+<p>Washington D.C. leads the way for most traffic incidents per 100 miles of lane! This alone seems to validate this methodology to me, as D.C. features some very difficult driving. Florida, California, and New York also make sense to me as ranking highly. I am a little surprised by Arizona's ranking, as its infrastructure is much newer than the other states listed here, but it's very populous. Interestingly, while Texas made the top ten list for overall events, it does NOT rank highly for events per 100 miles. The same is true for Illinois and Virginia, so I assume the size of these states normalizes for this. Texas is the second most populated state in the US, so I guess they deserve some credit for keeping traffic events down. </p>
+<p>Let's look at these rankings when we include SEVERITY. Instead of just counting events, this uses the Severity field, where construction or traffic is ranked from 1 to 4. Note - I have NOT been able to determine what exactly these rankings mean, but it seems a shame to not use this data, especially for such a thumb-in-the-wind analysis as this one.</p>
+<p><img alt="Severity Events per 100 miles road" src="car_assets/TotalSeverity100.png" /></p>
+<p><em>Traffic event occurence per 100 miles of road by state, weighted by severity, in 2021</em></p>
+<p>Interesting again! The rankings are almost completely unchanged, with only New Jerey and Maryland swapping positions. It doesn't look like "severity" introduces a lot of changes in the rankings, so for the sake of simplicity and interpretability, we will only consider event occurences. This means that a fender bender carries the same weight as a fatal accident, but it does make our analysis easier to understand, so we will accept the tradeoff.</p>
+<p><img alt="Accidents per 100 miles road" src="car_assets/Accidents100.png" /></p>
+<p><em>Accidents per 100 miles of road by state in 2021</em></p>
+<p><img alt="Construction per 100 miles road" src="car_assets/Construction100.png" /></p>
+<p><em>Construction per 100 miles of road by state in 2021</em></p>
+<p>Washington D.C. takes the top spot for everything! This seems a little unfair, as a better comparison for DC would probably just be a major city like New York or LA. However, "DC is a terrible place to drive" rolls off the tongue pretty easily, so I will keep it there.</p>
+<p>Some interesting observations, now that we have everything plotted:</p>
+<ul>
+<li>Arizona has a ton of construction, but does not hit the top 10 rankings for accidents per 100 miles. I think anyone who has driven in Arizona can believe this, as their infrastructure is relatively new compared to most states.</li>
+<li>Florida ranks highly for construction and accidents. Unsurprising.</li>
+<li>New York ranks high for construction, but not for accidents. This DOES surprise me, although it probably does not surprise New Yorkers, based on the egos of drivers I have met from there. I think New York City really warranta a city-based version of this analysis.</li>
+<li>Pennsylvania just makes the top 10 for accident occurences, and is 6th for construction. I have spent a lot of time driving across Pennsylvania, and I have to admit, I thought PA would have ranked worse here. I guess if you count PA as a big-time East-Coast state this is to be expected, but if you compare it to non-coastal neighbors like Ohio or West Virginia it feels pretty bad.</li>
+<li>Kudos to Texas, for ranking highly for TOTAL events but not making the top 10 for EITHER accidents or construction per 100 miles of lane.</li>
+</ul>
+<p>Overall, I think this analysis actually has some merit, as it matches some of my pre-existing notions about driving in these states.</p>
+<p>Just for fun, let's look at everything!</p>
+<p><img alt="Every State" src="car_assets/TotalTrafficEvents100_bottom.png" /></p>
+<p><em>Traffic events per 100 miles of road for every state in 2021</em></p>
+<p>I find it amazing how low Texas appears on this list, given how populous it is. The Dakotas and Nebraska are, unsurprisingly, our least eventful states.</p>
+<h2>2. Is there a significant difference in highway vs non-highway traffic event occurrence? Do states which fair poorly in one category also fair poorly in the other?</h2>
+<p>Now, let's separate highway and non-highway events.</p>
+<p><img alt="Accidents Highway" src="car_assets/AccidentsHighwaysCounts100.png" /></p>
+<p><em>Accidents per 100 miles of highway lane for every state in 2021</em></p>
+<p><img alt="Accidents Surface" src="car_assets/AccidentsSurfaceCounts100.png" /></p>
+<p><em>Accidents per 100 miles of surface street lane for every state in 2021</em></p>
+<p>DC leads the way for accidents on and off the highway. After that, we see some interesting findings. South Carolina is bad for both, but ranks significantly worse for surface street accidents than for highway accidents. Conversely, New Jersey ranks poorly for highway accidents, but does NOT rank in the top 10 for surface street accidents. Again, some of my pre-existing biases are being confirmed here - who gets off the highway in Jersey? </p>
+<p>However, the top 10 for accidents are largely the same - Florida and California fare poorly, and Maryland and Virginia rank poorly as well. It would probably be useful to show the ranks for these side by side.</p>
+<p>These data are starting to get a little tricky to compare visually - it may be easier to print the data to a table and look at the rankings for each state. A lower rank means that a state has either more accidents, construction, or both.</p>
+<table>
+<thead>
+<tr>
+<th align="left">State</th>
+<th align="right">TotalEvents</th>
+<th align="right">AccidentsHighway</th>
+<th align="right">AccidentsRoad</th>
+<th align="right">ConstructionHighway</th>
+<th align="right">ConstructionRoad</th>
+<th align="right">FederalFunding</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">DC</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">15</td>
+</tr>
+<tr>
+<td align="left">FL</td>
+<td align="right">2</td>
+<td align="right">3</td>
+<td align="right">2</td>
+<td align="right">4</td>
+<td align="right">3</td>
+<td align="right">9</td>
+</tr>
+<tr>
+<td align="left">AZ</td>
+<td align="right">3</td>
+<td align="right">15</td>
+<td align="right">10</td>
+<td align="right">30</td>
+<td align="right">1</td>
+<td align="right">12</td>
+</tr>
+<tr>
+<td align="left">CA</td>
+<td align="right">4</td>
+<td align="right">2</td>
+<td align="right">3</td>
+<td align="right">11</td>
+<td align="right">11</td>
+<td align="right">1</td>
+</tr>
+<tr>
+<td align="left">NY</td>
+<td align="right">5</td>
+<td align="right">11</td>
+<td align="right">11</td>
+<td align="right">10</td>
+<td align="right">4</td>
+<td align="right">2</td>
+</tr>
+<tr>
+<td align="left">DE</td>
+<td align="right">6</td>
+<td align="right">12</td>
+<td align="right">14</td>
+<td align="right">2</td>
+<td align="right">5</td>
+<td align="right">38</td>
+</tr>
+<tr>
+<td align="left">PA</td>
+<td align="right">7</td>
+<td align="right">14</td>
+<td align="right">8</td>
+<td align="right">3</td>
+<td align="right">6</td>
+<td align="right">8</td>
+</tr>
+<tr>
+<td align="left">MD</td>
+<td align="right">8</td>
+<td align="right">5</td>
+<td align="right">5</td>
+<td align="right">23</td>
+<td align="right">10</td>
+<td align="right">10</td>
+</tr>
+<tr>
+<td align="left">NJ</td>
+<td align="right">9</td>
+<td align="right">6</td>
+<td align="right">16</td>
+<td align="right">8</td>
+<td align="right">9</td>
+<td align="right">4</td>
+</tr>
+<tr>
+<td align="left">CT</td>
+<td align="right">10</td>
+<td align="right">4</td>
+<td align="right">18</td>
+<td align="right">6</td>
+<td align="right">14</td>
+<td align="right">16</td>
+</tr>
+<tr>
+<td align="left">VA</td>
+<td align="right">11</td>
+<td align="right">7</td>
+<td align="right">6</td>
+<td align="right">15</td>
+<td align="right">12</td>
+<td align="right">19</td>
+</tr>
+<tr>
+<td align="left">CO</td>
+<td align="right">12</td>
+<td align="right">29</td>
+<td align="right">36</td>
+<td align="right">5</td>
+<td align="right">8</td>
+<td align="right">22</td>
+</tr>
+<tr>
+<td align="left">OR</td>
+<td align="right">13</td>
+<td align="right">8</td>
+<td align="right">15</td>
+<td align="right">7</td>
+<td align="right">23</td>
+<td align="right">23</td>
+</tr>
+<tr>
+<td align="left">LA</td>
+<td align="right">14</td>
+<td align="right">18</td>
+<td align="right">7</td>
+<td align="right">9</td>
+<td align="right">16</td>
+<td align="right">27</td>
+</tr>
+<tr>
+<td align="left">SC</td>
+<td align="right">15</td>
+<td align="right">9</td>
+<td align="right">4</td>
+<td align="right">18</td>
+<td align="right">42</td>
+<td align="right">32</td>
+</tr>
+<tr>
+<td align="left">IL</td>
+<td align="right">16</td>
+<td align="right">36</td>
+<td align="right">26</td>
+<td align="right">25</td>
+<td align="right">7</td>
+<td align="right">3</td>
+</tr>
+<tr>
+<td align="left">IN</td>
+<td align="right">17</td>
+<td align="right">26</td>
+<td align="right">30</td>
+<td align="right">12</td>
+<td align="right">13</td>
+<td align="right">13</td>
+</tr>
+<tr>
+<td align="left">TX</td>
+<td align="right">18</td>
+<td align="right">24</td>
+<td align="right">13</td>
+<td align="right">19</td>
+<td align="right">18</td>
+<td align="right">6</td>
+</tr>
+<tr>
+<td align="left">MN</td>
+<td align="right">19</td>
+<td align="right">10</td>
+<td align="right">19</td>
+<td align="right">29</td>
+<td align="right">24</td>
+<td align="right">11</td>
+</tr>
+<tr>
+<td align="left">WA</td>
+<td align="right">20</td>
+<td align="right">21</td>
+<td align="right">23</td>
+<td align="right">17</td>
+<td align="right">19</td>
+<td align="right">5</td>
+</tr>
+<tr>
+<td align="left">UT</td>
+<td align="right">21</td>
+<td align="right">13</td>
+<td align="right">17</td>
+<td align="right">31</td>
+<td align="right">28</td>
+<td align="right">24</td>
+</tr>
+<tr>
+<td align="left">NC</td>
+<td align="right">22</td>
+<td align="right">17</td>
+<td align="right">9</td>
+<td align="right">36</td>
+<td align="right">35</td>
+<td align="right">20</td>
+</tr>
+<tr>
+<td align="left">RI</td>
+<td align="right">23</td>
+<td align="right">19</td>
+<td align="right">33</td>
+<td align="right">21</td>
+<td align="right">22</td>
+<td align="right">35</td>
+</tr>
+<tr>
+<td align="left">ID</td>
+<td align="right">24</td>
+<td align="right">32</td>
+<td align="right">22</td>
+<td align="right">22</td>
+<td align="right">20</td>
+<td align="right">41</td>
+</tr>
+<tr>
+<td align="left">MI</td>
+<td align="right">25</td>
+<td align="right">27</td>
+<td align="right">21</td>
+<td align="right">45</td>
+<td align="right">15</td>
+<td align="right">21</td>
+</tr>
+<tr>
+<td align="left">AR</td>
+<td align="right">26</td>
+<td align="right">30</td>
+<td align="right">31</td>
+<td align="right">14</td>
+<td align="right">30</td>
+<td align="right">36</td>
+</tr>
+<tr>
+<td align="left">MA</td>
+<td align="right">27</td>
+<td align="right">38</td>
+<td align="right">38</td>
+<td align="right">32</td>
+<td align="right">17</td>
+<td align="right">7</td>
+</tr>
+<tr>
+<td align="left">GA</td>
+<td align="right">28</td>
+<td align="right">25</td>
+<td align="right">35</td>
+<td align="right">27</td>
+<td align="right">26</td>
+<td align="right">14</td>
+</tr>
+<tr>
+<td align="left">TN</td>
+<td align="right">29</td>
+<td align="right">16</td>
+<td align="right">12</td>
+<td align="right">46</td>
+<td align="right">41</td>
+<td align="right">25</td>
+</tr>
+<tr>
+<td align="left">MT</td>
+<td align="right">30</td>
+<td align="right">20</td>
+<td align="right">20</td>
+<td align="right">20</td>
+<td align="right">45</td>
+<td align="right">44</td>
+</tr>
+<tr>
+<td align="left">WY</td>
+<td align="right">31</td>
+<td align="right">40</td>
+<td align="right">45</td>
+<td align="right">24</td>
+<td align="right">36</td>
+<td align="right">48</td>
+</tr>
+<tr>
+<td align="left">OH</td>
+<td align="right">32</td>
+<td align="right">43</td>
+<td align="right">29</td>
+<td align="right">28</td>
+<td align="right">25</td>
+<td align="right">18</td>
+</tr>
+<tr>
+<td align="left">ME</td>
+<td align="right">33</td>
+<td align="right">nan</td>
+<td align="right">48</td>
+<td align="right">37</td>
+<td align="right">21</td>
+<td align="right">39</td>
+</tr>
+<tr>
+<td align="left">NM</td>
+<td align="right">34</td>
+<td align="right">39</td>
+<td align="right">43</td>
+<td align="right">13</td>
+<td align="right">37</td>
+<td align="right">31</td>
+</tr>
+<tr>
+<td align="left">NV</td>
+<td align="right">35</td>
+<td align="right">31</td>
+<td align="right">32</td>
+<td align="right">16</td>
+<td align="right">43</td>
+<td align="right">28</td>
+</tr>
+<tr>
+<td align="left">OK</td>
+<td align="right">36</td>
+<td align="right">45</td>
+<td align="right">27</td>
+<td align="right">26</td>
+<td align="right">34</td>
+<td align="right">33</td>
+</tr>
+<tr>
+<td align="left">WV</td>
+<td align="right">37</td>
+<td align="right">22</td>
+<td align="right">25</td>
+<td align="right">33</td>
+<td align="right">38</td>
+<td align="right">43</td>
+</tr>
+<tr>
+<td align="left">AL</td>
+<td align="right">38</td>
+<td align="right">23</td>
+<td align="right">28</td>
+<td align="right">39</td>
+<td align="right">40</td>
+<td align="right">29</td>
+</tr>
+<tr>
+<td align="left">WI</td>
+<td align="right">39</td>
+<td align="right">46</td>
+<td align="right">47</td>
+<td align="right">40</td>
+<td align="right">29</td>
+<td align="right">26</td>
+</tr>
+<tr>
+<td align="left">IA</td>
+<td align="right">40</td>
+<td align="right">33</td>
+<td align="right">34</td>
+<td align="right">44</td>
+<td align="right">31</td>
+<td align="right">34</td>
+</tr>
+<tr>
+<td align="left">KY</td>
+<td align="right">41</td>
+<td align="right">41</td>
+<td align="right">44</td>
+<td align="right">38</td>
+<td align="right">32</td>
+<td align="right">30</td>
+</tr>
+<tr>
+<td align="left">VT</td>
+<td align="right">42</td>
+<td align="right">nan</td>
+<td align="right">46</td>
+<td align="right">48</td>
+<td align="right">27</td>
+<td align="right">49</td>
+</tr>
+<tr>
+<td align="left">NH</td>
+<td align="right">43</td>
+<td align="right">44</td>
+<td align="right">42</td>
+<td align="right">35</td>
+<td align="right">33</td>
+<td align="right">46</td>
+</tr>
+<tr>
+<td align="left">KS</td>
+<td align="right">44</td>
+<td align="right">35</td>
+<td align="right">40</td>
+<td align="right">34</td>
+<td align="right">39</td>
+<td align="right">37</td>
+</tr>
+<tr>
+<td align="left">MO</td>
+<td align="right">45</td>
+<td align="right">28</td>
+<td align="right">24</td>
+<td align="right">43</td>
+<td align="right">46</td>
+<td align="right">17</td>
+</tr>
+<tr>
+<td align="left">MS</td>
+<td align="right">46</td>
+<td align="right">34</td>
+<td align="right">37</td>
+<td align="right">41</td>
+<td align="right">44</td>
+<td align="right">40</td>
+</tr>
+<tr>
+<td align="left">SD</td>
+<td align="right">47</td>
+<td align="right">47</td>
+<td align="right">49</td>
+<td align="right">42</td>
+<td align="right">48</td>
+<td align="right">45</td>
+</tr>
+<tr>
+<td align="left">NE</td>
+<td align="right">48</td>
+<td align="right">42</td>
+<td align="right">41</td>
+<td align="right">47</td>
+<td align="right">47</td>
+<td align="right">42</td>
+</tr>
+<tr>
+<td align="left">ND</td>
+<td align="right">49</td>
+<td align="right">37</td>
+<td align="right">39</td>
+<td align="right">49</td>
+<td align="right">49</td>
+<td align="right">47</td>
+</tr>
+</tbody>
+</table>
+<p>Ranking the states is fun! Some more interesting observations:</p>
+<ul>
+<li>Arizona has a ton of surface street construction. If you have been to Arizona, this is not surprising.</li>
+<li>I personally find it interesting that Pennsylvania ranks so highly for highway construction at #3. This is NOT surprising, based on my driving experiences. While it is populous, it is not all that large, area-wise. Pennsylvania, why are you fixing your highways so often? <a href="https://apnews.com/article/joe-biden-business-pittsburgh-bridge-collapses-b91476e4d1dc1c7839bd0c39e7be186e">FIX YOUR BRIDGES</a>!</li>
+<li>California, New York, and Illinois are the top 3 federal funding-receiving states. Definitely sounds related to major cities.</li>
+<li>The Dakotas and Nebraska are at the bottom of our rankings. This is not too surprising, and serves as another reality-check that there is some validity to this method of analysis.</li>
+</ul>
+<p>Just scanning these data, it looks like highway and non-highway events are SOMEWHAT correlated. This makes some sense - maybe construction and accidents are more regionally related than they are road-specific related. However, there is a chance that our data are also skewed here - maybe data collection is better in some states than in others. However, we still see less-traveled states near the bottom, so I do not doubt our data that much.</p>
+<h2>3. Does accident frequency correlate to construction frequency? Do these correlate in some states but not others?</h2>
+<p>Let's look at a little correlation matrix. Generally speaking, a number closer to 1 in the table below means that row- and column- labels are correlated, and a number closer to 0 means they are not.</p>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="right">TotalEvents</th>
+<th align="right">AccidentsHighway</th>
+<th align="right">AccidentsRoad</th>
+<th align="right">ConstructionHighway</th>
+<th align="right">ConstructionRoad</th>
+<th align="right">FederalFunding</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">TotalEvents</td>
+<td align="right">1</td>
+<td align="right">0.802</td>
+<td align="right">0.875</td>
+<td align="right">0.721</td>
+<td align="right">0.914</td>
+<td align="right">0.345</td>
+</tr>
+<tr>
+<td align="left">AccidentsHighway</td>
+<td align="right">0.802</td>
+<td align="right">1</td>
+<td align="right">0.835</td>
+<td align="right">0.673</td>
+<td align="right">0.535</td>
+<td align="right">0.451</td>
+</tr>
+<tr>
+<td align="left">AccidentsRoad</td>
+<td align="right">0.875</td>
+<td align="right">0.835</td>
+<td align="right">1</td>
+<td align="right">0.597</td>
+<td align="right">0.657</td>
+<td align="right">0.329</td>
+</tr>
+<tr>
+<td align="left">ConstructionHighway</td>
+<td align="right">0.721</td>
+<td align="right">0.673</td>
+<td align="right">0.597</td>
+<td align="right">1</td>
+<td align="right">0.525</td>
+<td align="right">0.247</td>
+</tr>
+<tr>
+<td align="left">ConstructionRoad</td>
+<td align="right">0.914</td>
+<td align="right">0.535</td>
+<td align="right">0.657</td>
+<td align="right">0.525</td>
+<td align="right">1</td>
+<td align="right">0.232</td>
+</tr>
+<tr>
+<td align="left">FederalFunding</td>
+<td align="right">0.345</td>
+<td align="right">0.451</td>
+<td align="right">0.329</td>
+<td align="right">0.247</td>
+<td align="right">0.232</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table>
+<p>The correlation matrix has some interesting findings for us.</p>
+<ul>
+<li>Highway accidents correlate very strongly to surface street accidents. One possible interpretation of this information is that accident frequency is regionally dependent, but NOT dependent on a specific roadway or type of road. Maybe local culture, laws, or driving habits contribute to this?</li>
+<li>Construction on highways vs surface streets are somewhat correlated. This sounds about right - certain states probably tend to spend more than others.</li>
+<li>Accidents and construction are MODERATELY correlated. I would have expected a stronger correlation, but some connection makes sense.</li>
+<li>Federal funding does not correlate very strongly to anything. There is SOME correlation to highway accidents (0.45), but this seems like grasping for straws. I don't think we can make any intelligent observations based on how funding relates to road events. I would have EXPECTED highway construction to correlate with Federal funding, especially on interstates. However, such is not the case.</li>
+</ul>
+<h2>Summary, and some light conclusions</h2>
+<p>This analysis began with a not-very-scentific question - what are the least pleasant states for driving? Accident and construction data have been made readily available by Sobhan Moosavi and their research team, and this seemed like a great place to start trying to come up with a numeric answer to this question.</p>
+<p>I call the following statements "light conclusions," since this is a very preliminary analysis which just averages event occurences across entire states. Still, I think it is an interesting first step at quantifying how likely a person is to get stuck in traffic from a "traffic event":</p>
+<ol>
+<li>When we normalize for the amount of roads, which states exhibit the highest frequency of traffic events? The lowest?<ul>
+<li>Overall, Washington D.C. easily ranks higher than any US state for occurence of traffic events per 100 miles of road. Moving on to states, we see expected states appearing as the most likely to have traffic events: Florida, California, Arizona, New York, Delaware, and Pennslyvania rank highly. Arizona is an outlier here, as it leads the US for surface street construction but no other categories. </li>
+<li>Likewise, expected states with low populations feature low traffic events overall, including the Dakotas, Nebraska, Mississippi, and Missouri. </li>
+</ul>
+</li>
+<li>Is there a significant difference in highway vs non-highway traffic event occurrence? Do states which fair poorly in one category also fair poorly in the other?<ul>
+<li>Overall, there is a correlation between highway vs non-highway events, but there are some interesting outliers:<ul>
+<li>As stated above, Arizona has a very large amount of non-highway construction occurring, but it ranks 30th for highway construction. This is very interesting, given the size of Arizona and the need for higways.</li>
+<li>Conversely, Pennsylvania, a smaller state by area, ranks number 3 for highway construction. It also ranks 6 for road construction, however, so there is not a major difference here.</li>
+<li>New Jersey and Connecticut both rank very highly for highway accidents, but do not make the top 10 for surface street accidents. My uneducated guess for New Jersey is that there is a large group of drivers from surrounding states passing through for work or to get to New York or Phildelphia. </li>
+<li>In general, states with lots of highway accidents also have lots of surface street accidents. This is less true for construction - there is only moderate correlation between highway and surface street construction. </li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Does accident frequency correlate to construction frequency? Do these correlate in some states but not others?<ul>
+<li>There is SOME correlation between accidents of all kinds and construction of all kinds. As a long-distance driver, I have wondered about the relationship between road-blocking construction and accidents. If I were a government planner, I think there is ABSOLUTELY enough evidence of a correlation here to dig deeper and better understand this relationship - a correation of over 0.5 in a flippant analysis like this definitely indicates that there exists SOME relationship. </li>
+</ul>
+</li>
+<li>Generally speaking, is there a correlation between the amount of funding a state receives and the amount of construction which occurs? Do accidents have any correlation with funding?<ul>
+<li>Overall, there is a poor relationship. When looking through the details of the funding data, I do not see anything that stands out as "road work funding," so it's maybe no surprise that we do not see a correlation here. However, the absence of a negative correlation with accidents may be telling - wouldn't we expect an inverse relationship between federal funding and accidents? That being said, the funding looks targeted at things like public transportation and emissions, so maybe this is not a surprise.</li>
+<li>States with big cities rank highly - California, New York, and Illinois lead the way. This matches with my original thoughts, being that the funding is more closely aligned with urban-planning and managment activities.</li>
+</ul>
+</li>
+</ol>
+<p>This has been an entertaining exploration of these data. There were some surprises here, but the states which have lots of traffic events did not end up surpsing me all that much. If I wanted to spend more time here, I think the next step would definitely be to break this down into smaller regions, so we could account for major cities and surrounding rural areas. It would be great to get some "true" traffic information as well, but I think that is a tougher nut to crack. Here's to hoping that Pennsylvania gets those highways repaired!</p>
+<ul>
+<li>Rocco Panella, 2022 May 5</li>
+</ul>
+<p><link rel="stylesheet" href="style.css"></p>
