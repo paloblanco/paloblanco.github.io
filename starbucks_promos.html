@@ -47,29 +47,20 @@
 </li>
 </ul>
 <p>It is useful to understand the ranges for some of these categories.</p>
-<p>```</p>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>profile["gender"].value_counts(dropna=False)</p>
-</blockquote>
-</blockquote>
-</blockquote>
-<p>===== GENDER ======
+<pre><code>profile[&quot;gender&quot;].value_counts(dropna=False)
+
+===== GENDER ======
 M       8484
 F       6129
 None    2175
 O        212
-```</p>
+
+</code></pre>
 <p>Slightly more men have been simulated in this study - I will assume that this is representative of the actual users in the true Starbucks app. Additionally, exploring other fields reveals that users who replied "None" also lack any identifying information for age or income. As I am interesting in comparing like users for the efficacy of promos, we will probably exclude these users. </p>
 <p><img alt="Age Distribution" src="sbassets/age_distro.png" /></p>
 <p>Ages are normally distributed. It looks like the minimum allowed user age is 18 - it is possible that there is a bump here because users either user 18 as a default, or underage users just say they are 18. This is not a major issue, as the data looks basically normal. The major spike at 118 is a default value, and corresponds to "None" entries on gender - we will ignore these.</p>
 <p><img alt="Income Distribution" src="sbassets/income_distro.png" /></p>
-<p>```</p>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>profile.income.describe()
+<pre><code>&gt;&gt;&gt; profile.income.describe()
 ===== INCOME ======
 count     14825.000000
 mean      65404.991568
@@ -79,20 +70,13 @@ min       30000.000000
 50%       64000.000000
 75%       80000.000000
 max      120000.000000
-```</p>
-</blockquote>
-</blockquote>
-</blockquote>
+</code></pre>
 <p>Data skews to the right, and this generally looks as expected. </p>
 <p>"became_member_on" is a trickier field - it would be more useful if this was numeric and it described the length of a users's membership, in days. We will create this value, and call it "tenure".</p>
-<p><code>python
-profile["joindate"] = pd.to_datetime(profile["became_member_on"],format="%Y%m%d")
-profile["tenure"] = (profile["joindate"] - profile["joindate"].min()).dt.days</code></p>
-<p>```</p>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>profile.tenure.describe()
+<pre><code class="language-python">profile[&quot;joindate&quot;] = pd.to_datetime(profile[&quot;became_member_on&quot;],format=&quot;%Y%m%d&quot;)
+profile[&quot;tenure&quot;] = (profile[&quot;joindate&quot;] - profile[&quot;joindate&quot;].min()).dt.days
+</code></pre>
+<pre><code>&gt;&gt;&gt; profile.tenure.describe()
 count    17000.000000
 mean      1305.550118
 std        411.223904
@@ -101,10 +85,7 @@ min          0.000000
 50%       1465.000000
 75%       1615.000000
 max       1823.000000
-```</p>
-</blockquote>
-</blockquote>
-</blockquote>
+</code></pre>
 <p><img alt="Tenure Distribution" src="sbassets/tenure.png" /></p>
 <p>This is a very strange looking distribution to me. There must have been major pushes for membership at certain points in time, causing new users to be introduced.</p>
 <h3>transcript - records for transactions, offers received, offers viewed, and offers completed</h3>
@@ -118,48 +99,43 @@ max       1823.000000
 </ul>
 </li>
 </ul>
-<p>```</p>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>print(transcript.event.value_counts(dropna=False))
+<pre><code>&gt;&gt;&gt; print(transcript.event.value_counts(dropna=False))
 transaction        138953
 offer received      76277
 offer viewed        57725
 offer completed     33579
-```</p>
-</blockquote>
-</blockquote>
-</blockquote>
+</code></pre>
 <p>Not quite half of our events are transactions, and we see descending values of offers received, viewed, and completed. This is not surprising.</p>
-<p><img alt="Offer Distribution" src="offerdates.png" /></p>
+<p><img alt="Offer Distribution" src="sbassets/offerdates.png" /></p>
 <p>During the experimental period, there were fixed days on which offers would go out to customers. This is pretty useful for comparing the efficacy of one offer versus another.</p>
 <p>The transcript is not easy to read in its current state. If I join the portfolio data to it, I can explore the offer types much more easily.</p>
-<p>```python
-df = transcript.merge(profile,how='left',left_on='person',right_on='id')
+<pre><code class="language-python">df = transcript.merge(profile,how='left',left_on='person',right_on='id')
 df = df[[
-    "person",
-    "event",
-    "value",
-    "time",
-    "gender",
-    "age",
-    "income",
-    "tenure"
-]]</p>
-<p>df["amount"] = df.value.apply(lambda x: x.get("amount",0))
-df["offerid"] = df.value.apply(lambda x: x.get("offer id",x.get("offer_id",0)))</p>
-<p>df = df.merge(portfolio, how='left', left_on="offerid", right_on="id")</p>
-<p>df = df[[
-    "person",
-    "event",
-    # "value",
-    "time",
-    "gender",
-    "age",
-    "income",
-    "tenure",
-    "amount",
+    &quot;person&quot;,
+    &quot;event&quot;,
+    &quot;value&quot;,
+    &quot;time&quot;,
+    &quot;gender&quot;,
+    &quot;age&quot;,
+    &quot;income&quot;,
+    &quot;tenure&quot;
+]]
+
+df[&quot;amount&quot;] = df.value.apply(lambda x: x.get(&quot;amount&quot;,0))
+df[&quot;offerid&quot;] = df.value.apply(lambda x: x.get(&quot;offer id&quot;,x.get(&quot;offer_id&quot;,0)))
+
+df = df.merge(portfolio, how='left', left_on=&quot;offerid&quot;, right_on=&quot;id&quot;)
+
+df = df[[
+    &quot;person&quot;,
+    &quot;event&quot;,
+    # &quot;value&quot;,
+    &quot;time&quot;,
+    &quot;gender&quot;,
+    &quot;age&quot;,
+    &quot;income&quot;,
+    &quot;tenure&quot;,
+    &quot;amount&quot;,
     'offername',
     'channels', 
     'reward', 
@@ -170,10 +146,12 @@ df["offerid"] = df.value.apply(lambda x: x.get("offer id",x.get("offer_id",0)))<
     'web', 
     'social', 
     'email', 
-]]</p>
-<p>df.time = df.time/24.0</p>
-<p>df.head()
-```</p>
+]]
+
+df.time = df.time/24.0
+
+df.head()
+</code></pre>
 <table>
 <thead>
 <tr>
@@ -312,63 +290,74 @@ df["offerid"] = df.value.apply(lambda x: x.get("offer id",x.get("offer_id",0)))<
 
 <p>As stated above, I am interested in understanding how to maximize profit from the most profitable base using promotions. This means I will summarize the data on a per-user basis, and examine how certain factors affect profitability.</p>
 <p>I will create a detailed "person" table, and then explore it visually.</p>
-<p>```python
-person_g = df.groupby([
-    "person",
-    "gender",
-    "age",
-    "income",
-    "tenure"
-])</p>
-<p>person_spend = person_g.amount.sum()
+<pre><code class="language-python">person_g = df.groupby([
+    &quot;person&quot;,
+    &quot;gender&quot;,
+    &quot;age&quot;,
+    &quot;income&quot;,
+    &quot;tenure&quot;
+])
+
+person_spend = person_g.amount.sum()
 person_mobile = person_g.mobile.sum()
 person_web = person_g.web.sum()
 person_social = person_g.social.sum()
-person_email = person_g.email.sum()</p>
-<p>person_g_offersonly = df[df.event == "offer received"].groupby([
-    "person",
-    "gender",
-    "age",
-    "income",
-    "tenure"
-])</p>
-<p>person_offers_total = person_g_offersonly.offername.count()</p>
-<p>person_offers = df[df.event == "offer received"].pivot_table(index=[
-    "person",
-    "gender",
-    "age",
-    "income",
-    "tenure"
-], columns='offername', aggfunc='size', fill_value=0)</p>
-<p>person_offers_type = df[df.event == "offer received"].pivot_table(index=[
-    "person",
-    "gender",
-    "age",
-    "income",
-    "tenure"
-], columns='offer_type', aggfunc='size', fill_value=0)</p>
-<p>person_events = df.pivot_table(index=[
-    "person",
-    "gender",
-    "age",
-    "income",
-    "tenure"
-], columns='event', aggfunc='size', fill_value=0)</p>
-<p>for col in person_events:
-    person_offers[col] = person_events[col]</p>
-<p>for col in person_offers_type:
-    person_offers[col] = person_offers_type[col]</p>
-<p>person_offers["spend"] = person_spend
-person_offers["totaloffers"] = person_offers_total
-person_offers["spendpertransaction"] = person_offers["spend"] / person_offers["transaction"]</p>
-<p>person_offers["mobile"] = person_mobile
-person_offers["web"] = person_web
-person_offers["social"] = person_social
-person_offers["email"] = person_email</p>
-<h1>person_offers</h1>
-<p>df_p = person_offers.reset_index()
+person_email = person_g.email.sum()
+
+person_g_offersonly = df[df.event == &quot;offer received&quot;].groupby([
+    &quot;person&quot;,
+    &quot;gender&quot;,
+    &quot;age&quot;,
+    &quot;income&quot;,
+    &quot;tenure&quot;
+])
+
+person_offers_total = person_g_offersonly.offername.count()
+
+person_offers = df[df.event == &quot;offer received&quot;].pivot_table(index=[
+    &quot;person&quot;,
+    &quot;gender&quot;,
+    &quot;age&quot;,
+    &quot;income&quot;,
+    &quot;tenure&quot;
+], columns='offername', aggfunc='size', fill_value=0)
+
+person_offers_type = df[df.event == &quot;offer received&quot;].pivot_table(index=[
+    &quot;person&quot;,
+    &quot;gender&quot;,
+    &quot;age&quot;,
+    &quot;income&quot;,
+    &quot;tenure&quot;
+], columns='offer_type', aggfunc='size', fill_value=0)
+
+person_events = df.pivot_table(index=[
+    &quot;person&quot;,
+    &quot;gender&quot;,
+    &quot;age&quot;,
+    &quot;income&quot;,
+    &quot;tenure&quot;
+], columns='event', aggfunc='size', fill_value=0)
+
+for col in person_events:
+    person_offers[col] = person_events[col]
+
+for col in person_offers_type:
+    person_offers[col] = person_offers_type[col]
+
+person_offers[&quot;spend&quot;] = person_spend
+person_offers[&quot;totaloffers&quot;] = person_offers_total
+person_offers[&quot;spendpertransaction&quot;] = person_offers[&quot;spend&quot;] / person_offers[&quot;transaction&quot;]
+
+person_offers[&quot;mobile&quot;] = person_mobile
+person_offers[&quot;web&quot;] = person_web
+person_offers[&quot;social&quot;] = person_social
+person_offers[&quot;email&quot;] = person_email
+
+# person_offers
+
+df_p = person_offers.reset_index()
 df_p.head()
-```</p>
+</code></pre>
 <table>
 <thead>
 <tr>
@@ -588,7 +577,7 @@ df_p.head()
 <p>This has created an extensive customer profile table. Some key values in here include the amount of offers received per customer, the total spend per customer, the spend-per-transaction, total transaction count, and the counts of communication channels used.</p>
 <p>Already, we see a potential weakness in this analysis - we will not be looking at duration, difficulty, and rewards of offers. However, this is not the goal of our analysis - we want to understand if there are specific groups of customers who are, overall, more interested in promotions than others, and if this drives profits.</p>
 <p>Since we are interested in maximizing profits, I will explore spending and its relationships a little bit:</p>
-<p><img alt="Spending by Age" src="sbassets/spendage.png" /></p>
+<p><img alt="Spending by Age" src="sbassets/spend_age.png" /></p>
 <p>The median spending of users almost doubles as their age goes from 18-19 to 55-60. Interestingly, all of these plots have very long upward tails, which may indicate that our profit base may be with higher-spenders.</p>
 <p><img alt="profit_spend" src="sbassets/profit_spend.png" /></p>
 <p>This is an interesting plot. The blue bars represent "fraction of total profits". The X-axis is the total spending by a customer. The orange bars represent the fraction of users who actually spend that amount. What this means is that, while our customers have a right-skewing distribution (ie there are many users who only spend a small amount), our profits are centered around users who spend $150 to $200 a month. Any analysis we want to do should focus on maximizing engagement from this group.</p>
@@ -604,29 +593,29 @@ df_p.head()
 <p><img alt="sptprofit" src="sbassets/sptprofit.png" /></p>
 <p>Spend-per-transaction is very important for our profit base. Users who spend $0-$4 per transaction make up nearly 30% of the user base, but account for only about 7% of profits. This further indicates that we will want to focus on driving engagement from our most profitable users.</p>
 <p>I would now like to start understanding how the offers being made to the customers work in driving profits.</p>
-<p>```python
-def show_corr(df):
+<pre><code class="language-python">def show_corr(df):
     df_p_corr = df[[
-        "age",
-        "income",
-        "tenure",
+        &quot;age&quot;,
+        &quot;income&quot;,
+        &quot;tenure&quot;,
         'offer received',
-        "offer viewed",
-        "offer completed",
-        "transaction",
-        "spend",
-        "spendpertransaction",
-        "mobile",
-        "web",
-        "social",
-        "email",
-        "totaloffers"
-    ]]</p>
-<pre><code>corr = df_p_corr.corr()
-return corr.style.background_gradient(cmap='coolwarm',vmin=-1,vmax=1)
+        &quot;offer viewed&quot;,
+        &quot;offer completed&quot;,
+        &quot;transaction&quot;,
+        &quot;spend&quot;,
+        &quot;spendpertransaction&quot;,
+        &quot;mobile&quot;,
+        &quot;web&quot;,
+        &quot;social&quot;,
+        &quot;email&quot;,
+        &quot;totaloffers&quot;
+    ]]
+
+    corr = df_p_corr.corr()
+    return corr.style.background_gradient(cmap='coolwarm',vmin=-1,vmax=1)
+
+show_corr(df_p)
 </code></pre>
-<p>show_corr(df_p)
-```</p>
 <style type="text/css">
 #T_98eeb_row0_col0, #T_98eeb_row1_col1, #T_98eeb_row2_col2, #T_98eeb_row3_col3, #T_98eeb_row3_col13, #T_98eeb_row4_col4, #T_98eeb_row5_col5, #T_98eeb_row6_col6, #T_98eeb_row7_col7, #T_98eeb_row8_col8, #T_98eeb_row9_col9, #T_98eeb_row10_col10, #T_98eeb_row11_col11, #T_98eeb_row12_col12, #T_98eeb_row13_col3, #T_98eeb_row13_col13 {
   background-color: #b40426;
@@ -1139,83 +1128,87 @@ return corr.style.background_gradient(cmap='coolwarm',vmin=-1,vmax=1)
 <h3>Data Preprocessing</h3>
 <p>I already know that there are some spending habit differences inherent in age and income. To minimize this, I will look at each users' relative spending to the mean of their demographic.</p>
 <p>I can start with our per-person table, which has been used for visualizations above. I also want to remove outliers, so I will only consider users who spend less than $400 a month. Additionally, I saw that users who spend less than $10 per transaction only account for 7% of our profits, so I will focus on our profit base by considersing users whose mean spend-per-transaction is at least $10.</p>
-<p>```python</p>
-<h1>paired difference modeling:</h1>
-<p>df_pair = df_p[df_p["spendpertransaction"]&gt;=10][df_p.spend &lt;= 400][[
-    "age",
-    "income",
-    "tenure",
-    "bogo",
-    "discount",
-    "informational",
-    "totaloffers",
-    "offer viewed",
-    "offer completed",
-    "mobile",
-    "web",
-    "social",
-    "email",
-    "spend",
-    "spendpertransaction",
-    "transaction"
+<pre><code class="language-python"># paired difference modeling:
+df_pair = df_p[df_p[&quot;spendpertransaction&quot;]&gt;=10][df_p.spend &lt;= 400][[
+    &quot;age&quot;,
+    &quot;income&quot;,
+    &quot;tenure&quot;,
+    &quot;bogo&quot;,
+    &quot;discount&quot;,
+    &quot;informational&quot;,
+    &quot;totaloffers&quot;,
+    &quot;offer viewed&quot;,
+    &quot;offer completed&quot;,
+    &quot;mobile&quot;,
+    &quot;web&quot;,
+    &quot;social&quot;,
+    &quot;email&quot;,
+    &quot;spend&quot;,
+    &quot;spendpertransaction&quot;,
+    &quot;transaction&quot;
 ]]
-df_pair["income_bin"] = (df_pair.income // 10000)*10000
-df_pair["age_bin"] = (df_pair.age // 10) * 10</p>
-<h1>within each group, get the means for spend, transaction, and spendpertransaction. report these back to df_pair. do corr on these.</h1>
-<p>df_summary = df_pair.groupby(["income_bin","age_bin"])[["spend","transaction","spendpertransaction"]].mean()
-df_std = df_pair.groupby(["income_bin","age_bin"])[["spend","transaction","spendpertransaction"]].std()
-df_groupsize = df_pair.groupby(["income_bin","age_bin"])["spend"].count()</p>
-<p>df_summary["spend_std"] = df_std.spend
-df_summary["transaction_std"] = df_std.transaction
-df_summary["spendpertransaction_std"] = df_std.spendpertransaction
-df_summary["groupsize"] = df_groupsize</p>
-<p>df_lookup_bins = df_summary.reset_index()</p>
-<p>df_paired_means = df_pair.merge(df_lookup_bins, how='left', left_on=["age_bin","income_bin"], right_on=["age_bin","income_bin"], suffixes = ("","_mean"))
+df_pair[&quot;income_bin&quot;] = (df_pair.income // 10000)*10000
+df_pair[&quot;age_bin&quot;] = (df_pair.age // 10) * 10
+
+# within each group, get the means for spend, transaction, and spendpertransaction. report these back to df_pair. do corr on these.
+
+df_summary = df_pair.groupby([&quot;income_bin&quot;,&quot;age_bin&quot;])[[&quot;spend&quot;,&quot;transaction&quot;,&quot;spendpertransaction&quot;]].mean()
+df_std = df_pair.groupby([&quot;income_bin&quot;,&quot;age_bin&quot;])[[&quot;spend&quot;,&quot;transaction&quot;,&quot;spendpertransaction&quot;]].std()
+df_groupsize = df_pair.groupby([&quot;income_bin&quot;,&quot;age_bin&quot;])[&quot;spend&quot;].count()
+
+df_summary[&quot;spend_std&quot;] = df_std.spend
+df_summary[&quot;transaction_std&quot;] = df_std.transaction
+df_summary[&quot;spendpertransaction_std&quot;] = df_std.spendpertransaction
+df_summary[&quot;groupsize&quot;] = df_groupsize
+
+df_lookup_bins = df_summary.reset_index()
+
+df_paired_means = df_pair.merge(df_lookup_bins, how='left', left_on=[&quot;age_bin&quot;,&quot;income_bin&quot;], right_on=[&quot;age_bin&quot;,&quot;income_bin&quot;], suffixes = (&quot;&quot;,&quot;_mean&quot;))
 df_paired_means = df_paired_means[[
-    "income_bin",
-    "age_bin",
-    "bogo",
-    "discount",
-    "informational",
-    "totaloffers",
-    "offer viewed",
-    "offer completed",
-    "mobile",
-    "web",
-    "social",
-    "email",
-    "spend",
-    "spend_mean",
-    "spend_std",
-    "transaction",
-    "transaction_mean",
-    "transaction_std",
-    "spendpertransaction",
-    "spendpertransaction_mean",
-    "spendpertransaction_std",
+    &quot;income_bin&quot;,
+    &quot;age_bin&quot;,
+    &quot;bogo&quot;,
+    &quot;discount&quot;,
+    &quot;informational&quot;,
+    &quot;totaloffers&quot;,
+    &quot;offer viewed&quot;,
+    &quot;offer completed&quot;,
+    &quot;mobile&quot;,
+    &quot;web&quot;,
+    &quot;social&quot;,
+    &quot;email&quot;,
+    &quot;spend&quot;,
+    &quot;spend_mean&quot;,
+    &quot;spend_std&quot;,
+    &quot;transaction&quot;,
+    &quot;transaction_mean&quot;,
+    &quot;transaction_std&quot;,
+    &quot;spendpertransaction&quot;,
+    &quot;spendpertransaction_mean&quot;,
+    &quot;spendpertransaction_std&quot;,
 ]]
-df_paired_means["spend_rel"] = df_paired_means.spend - df_paired_means.spend_mean
-df_paired_means["transaction_rel"] = df_paired_means.transaction - df_paired_means.transaction_mean
-df_paired_means["spendpertransaction_rel"] = df_paired_means.spendpertransaction - df_paired_means.spendpertransaction_mean
-```</p>
+df_paired_means[&quot;spend_rel&quot;] = df_paired_means.spend - df_paired_means.spend_mean
+df_paired_means[&quot;transaction_rel&quot;] = df_paired_means.transaction - df_paired_means.transaction_mean
+df_paired_means[&quot;spendpertransaction_rel&quot;] = df_paired_means.spendpertransaction - df_paired_means.spendpertransaction_mean
+</code></pre>
 <p>Before modeling this data, it will be useful to look at the correlation matrix for it:</p>
-<p><code>python
-df_pair_corr = df_paired_means[[
-    "bogo",
-    "discount",
-    "informational",
-    "totaloffers",
-    "offer viewed",
-    "offer completed",
-    "mobile",
-    "web",
-    "social",
-    "email",
-    "spend_rel",
-    "transaction_rel",
-    "spendpertransaction_rel"
+<pre><code class="language-python">df_pair_corr = df_paired_means[[
+    &quot;bogo&quot;,
+    &quot;discount&quot;,
+    &quot;informational&quot;,
+    &quot;totaloffers&quot;,
+    &quot;offer viewed&quot;,
+    &quot;offer completed&quot;,
+    &quot;mobile&quot;,
+    &quot;web&quot;,
+    &quot;social&quot;,
+    &quot;email&quot;,
+    &quot;spend_rel&quot;,
+    &quot;transaction_rel&quot;,
+    &quot;spendpertransaction_rel&quot;
 ]].corr()
-df_pair_corr.style.background_gradient(cmap='coolwarm',vmin=-1,vmax=1)</code></p>
+df_pair_corr.style.background_gradient(cmap='coolwarm',vmin=-1,vmax=1)
+</code></pre>
 <style type="text/css">
 #T_5d6de_row0_col0, #T_5d6de_row1_col1, #T_5d6de_row2_col2, #T_5d6de_row3_col3, #T_5d6de_row4_col4, #T_5d6de_row5_col5, #T_5d6de_row6_col6, #T_5d6de_row7_col7, #T_5d6de_row8_col8, #T_5d6de_row9_col9, #T_5d6de_row10_col10, #T_5d6de_row11_col11, #T_5d6de_row12_col12 {
   background-color: #b40426;
@@ -1703,39 +1696,41 @@ df_pair_corr.style.background_gradient(cmap='coolwarm',vmin=-1,vmax=1)</code></p
 
 <p>Ultimately, I have a fairly simply system I am trying to model, and so my machine learning techniques are fairly simple. I will use cross validation and a variety of models and parameters to find an accurate model. </p>
 <p>Since I am mapping numeric inputs to numeric outputs, I will be using regression models. In particular, I will use a decision tree, a linear model, and a gradient boosted model. I am optimistic for the decision tree, since we are dealing with mostly integer input data, which lends itself well to being separated logically into leaves and branches.</p>
-<p>```python
-from sklearn.tree import DecisionTreeRegressor
+<pre><code class="language-python">from sklearn.tree import DecisionTreeRegressor
 from sklearn.linear_model import LinearRegression
-from sklearn.ensemble import GradientBoostingRegressor</p>
-<p>df_pair_ml = df_paired_means[[
-    "bogo",
-    "discount",
-    "informational",
-    "totaloffers",
-    "offer viewed",
-    "offer completed",
-    "mobile",
-    "web",
-    "social",
-    "email",
-    "spend_rel",
-    "transaction_rel",
-    "spendpertransaction_rel"
-]]</p>
-<p>X = df_pair_ml[[
-    "bogo",
-    "discount",
-    "informational",
-    "totaloffers",
-    # "offer viewed",
-    # "offer completed",
-    "mobile",
-    "web",
-    "social",
-    "email",
+from sklearn.ensemble import GradientBoostingRegressor
+
+df_pair_ml = df_paired_means[[
+    &quot;bogo&quot;,
+    &quot;discount&quot;,
+    &quot;informational&quot;,
+    &quot;totaloffers&quot;,
+    &quot;offer viewed&quot;,
+    &quot;offer completed&quot;,
+    &quot;mobile&quot;,
+    &quot;web&quot;,
+    &quot;social&quot;,
+    &quot;email&quot;,
+    &quot;spend_rel&quot;,
+    &quot;transaction_rel&quot;,
+    &quot;spendpertransaction_rel&quot;
 ]]
-y = df_pair_ml.spend_rel</p>
-<p>regressors = [
+
+X = df_pair_ml[[
+    &quot;bogo&quot;,
+    &quot;discount&quot;,
+    &quot;informational&quot;,
+    &quot;totaloffers&quot;,
+    # &quot;offer viewed&quot;,
+    # &quot;offer completed&quot;,
+    &quot;mobile&quot;,
+    &quot;web&quot;,
+    &quot;social&quot;,
+    &quot;email&quot;,
+]]
+y = df_pair_ml.spend_rel
+
+regressors = [
     DecisionTreeRegressor(max_depth=3),
     DecisionTreeRegressor(max_depth=5),
     DecisionTreeRegressor(max_depth=10),
@@ -1744,25 +1739,20 @@ y = df_pair_ml.spend_rel</p>
     LinearRegression(),
     GradientBoostingRegressor(n_estimators=100),
     GradientBoostingRegressor(n_estimators=500),
-]</p>
-<p>for regressor in regressors:
+]
+
+for regressor in regressors:
     print(cross_val_score(regressor, X, y, cv=20).mean())
-```</p>
+</code></pre>
 <h3>Refinement</h3>
 <p>I used 20 cross-validations for each regression model. This is feasible, given the small size of the dataset. Additionally, for the decision tree model, I used a variety of maximum depths. For the gradient boosted regressor, I allowed for more estimators than the default of 100.</p>
 <h2>Section 4: Results</h2>
 <h3>Model Evaluation and Validation</h3>
 <!-- discuss the models and parameters used in the methodology. If no model is used, students can discuss the methodology using data visualizations and other means. -->
 <p>Unfortuntaly, the predictive power of the models developed is very poor, with r2 values never exceeding 0.25. </p>
-<p>```</p>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>print(cross_val_score(regressor, X, y, cv=20).mean())</p>
-</blockquote>
-</blockquote>
-</blockquote>
-<p>Decision Tree, depth 3:        0.15197208414248792
+<pre><code>&gt;&gt;&gt;print(cross_val_score(regressor, X, y, cv=20).mean())
+
+Decision Tree, depth 3:        0.15197208414248792
 Decision Tree, depth 5:        0.1940728864789338
 Decision Tree, depth 10:       0.11116998903717482
 Decision Tree, depth 20:       -0.23856172203299933
@@ -1770,7 +1760,7 @@ Decision Tree, unlimited:      -0.2425042809154113
 Linear Regression:             0.2366077771775426
 GradientBoost 100:             0.23960791642400778
 GradientBoost 500:             0.23376893615880764
-```</p>
+</code></pre>
 <p>The decision tree model was the worst performer, and is subject to overfitting when too great a depth is allowed. Linear regression and gradient boosted regression performed nearly the same, indicating that there is simply poor correlation between the input variables and relative spend of each user. This was expected, of course, since the correlation matrix showed very poor correlations between these variables and spend.</p>
 <p><img alt="predict.png" src="sbassets/predict.png" /></p>
 <p>When we look at the predictive power of our best model, we can visually observe the poor correlation. There is, of course, some correlation, and we would expect this - at a very basic level, if the offers were at all effective, I should expect some effect on user spending. However, it is unlikely that we can identify the correct ratios of offers to send to users based on a model with this lack of predictive capability.</p>
