@@ -1,0 +1,41 @@
+/* Force Light mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: light;
+    --bg: #fff;
+    --accent-bg: #f5f7ff;
+    --text: #212121;
+    --text-light: #585858;
+    --accent: #0d47a1;
+    --accent-hover: #1266e2;
+    --accent-text: var(--bg);
+    --code: #d81b60;
+    --preformatted: #444;
+    --marked: #ffdd33;
+    --disabled: #efefef;
+  }
+}
+
+/* body > header, footer {
+  text-align: left;
+} */
+
+header {
+  display: flex;
+  align-items: center;   /* vertically align image with text */
+  justify-content: center; /* center the whole block on the page */
+  gap: 1rem;             /* spacing between image and text */
+  text-align: left;      /* keep the text block itself left-aligned */
+}
+
+header img {
+  width: 30%;   /* shrink by percentage */
+  height: auto; /* keep aspect ratio */
+  max-width: 200px; /* optional cap so it doesn’t get too large */
+}
+
+/* wrap the text part in a vertical stack */
+header h1, 
+header p {
+  margin: 0; /* remove default spacing for tighter layout */
+}
