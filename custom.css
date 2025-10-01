@@ -1,3 +1,8 @@
+:root {
+  /* Set sans-serif & mono fonts */
+  --sans-font: Verdana, sans-serif;
+}
+
 /* Force Light mode */
 @media (prefers-color-scheme: dark) {
   :root {
