@@ -28,10 +28,15 @@
 {{ if $posts }}
 <h2>Recent Posts</h2>
 {{ range first 5 $posts }}
-<article>
-    <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
-    {{ if .Description }}<p>{{ .Description }}</p>{{ end }}
-    <small>{{ .Date.Format "January 2, 2006" }}</small>
+<article class="post-entry">
+    {{ with .Params.cover.image }}
+    <img src="{{ . }}" alt="{{ $.Params.cover.alt }}" class="post-thumb">
+    {{ end }}
+    <div>
+        <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+        {{ if .Description }}<p>{{ .Description }}</p>{{ end }}
+        <small>{{ .Date.Format "January 2, 2006" }}</small>
+    </div>
 </article>
 {{ end }}
 {{ if gt (len $posts) 5 }}
