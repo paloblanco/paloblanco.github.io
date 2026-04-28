@@ -10,7 +10,7 @@
 
 {{ range .Pages.ByDate.Reverse }}
 <article>
-    <h2><a href="{{ .Permalink }}">{{ .Title }}</a></h2>
+    <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
     {{ if .Description }}<p>{{ .Description }}</p>{{ end }}
     <small>{{ .Date.Format "January 2, 2006" }}</small>
 </article>

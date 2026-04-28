@@ -18,10 +18,10 @@
 
 <nav class="post-nav">
     {{ with .PrevInSection }}
-    <a href="{{ .Permalink }}">← {{ .Title }}</a>
+    <a href="{{ .RelPermalink }}">← {{ .Title }}</a>
     {{ end }}
     {{ with .NextInSection }}
-    <a class="next" href="{{ .Permalink }}">{{ .Title }} →</a>
+    <a class="next" href="{{ .RelPermalink }}">{{ .Title }} →</a>
     {{ end }}
 </nav>
 {{ end }}

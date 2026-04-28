@@ -29,7 +29,7 @@
 <h2>Recent Posts</h2>
 {{ range first 5 $posts }}
 <article>
-    <h3><a href="{{ .Permalink }}">{{ .Title }}</a></h3>
+    <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
     {{ if .Description }}<p>{{ .Description }}</p>{{ end }}
     <small>{{ .Date.Format "January 2, 2006" }}</small>
 </article>
