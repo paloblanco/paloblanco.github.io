@@ -1,4 +1,7 @@
 {{ define "main" }}
+{{ with .Params.cover.image }}
+<img src="{{ . }}" alt="{{ $.Params.cover.alt }}" class="cover-image">
+{{ end }}
 <h1>{{ .Title }}</h1>
 
 {{ with .Content }}
