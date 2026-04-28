@@ -1,0 +1,302 @@
+/* ============================================================
+   Site stylesheet
+   Edit the :root variables below to retheme the whole site.
+   ============================================================ */
+
+
+/* --- Variables -------------------------------------------- */
+
+:root {
+  --font-sans: system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+
+  --color-text:        #1f2328;
+  --color-text-muted:  #656d76;
+  --color-bg:          #ffffff;
+  --color-bg-subtle:   #f6f8fa;
+  --color-border:      #d0d7de;
+  --color-link:        #0969da;
+  --color-link-hover:  #0550ae;
+
+  --max-width: 740px;
+  --gap: 1.5rem;
+}
+
+
+/* --- Reset ------------------------------------------------- */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--color-text);
+  background: var(--color-bg);
+  margin: 0;
+  padding: 0;
+}
+
+
+/* --- Layout ------------------------------------------------ */
+
+header, main, footer {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding-left: var(--gap);
+  padding-right: var(--gap);
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+main {
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+  min-height: 60vh;
+}
+
+footer {
+  padding-top: 1.5rem;
+  padding-bottom: 2rem;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+
+/* --- Navigation -------------------------------------------- */
+
+.site-title {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--color-text);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.site-title:hover {
+  color: var(--color-link);
+}
+
+nav {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+nav a {
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+nav a:hover {
+  color: var(--color-link);
+}
+
+
+/* --- Typography -------------------------------------------- */
+
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.3;
+  font-weight: 600;
+  margin: 1.75rem 0 0.5rem;
+}
+
+h1 { font-size: 1.875rem; margin-top: 0; }
+h2 { font-size: 1.375rem; }
+h3 { font-size: 1.125rem; }
+h4 { font-size: 1rem; }
+
+p {
+  margin: 0 0 1rem;
+}
+
+small, time {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+ul, ol {
+  padding-left: 1.5rem;
+  margin: 0 0 1rem;
+}
+
+li {
+  margin-bottom: 0.25rem;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 2rem 0;
+}
+
+
+/* --- Links ------------------------------------------------- */
+
+a {
+  color: var(--color-link);
+}
+
+a:hover {
+  color: var(--color-link-hover);
+}
+
+
+/* --- Images ------------------------------------------------ */
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+
+/* --- Tables ------------------------------------------------ */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  margin: 1.5rem 0;
+  display: block;
+  overflow-x: auto;
+}
+
+th, td {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border);
+  text-align: left;
+  white-space: nowrap;
+}
+
+th {
+  background: var(--color-bg-subtle);
+  font-weight: 600;
+}
+
+tr:nth-child(even) td {
+  background: var(--color-bg-subtle);
+}
+
+
+/* --- Code -------------------------------------------------- */
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--color-bg-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 0.1em 0.4em;
+}
+
+pre {
+  background: var(--color-bg-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  margin: 1.25rem 0;
+}
+
+pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.875rem;
+}
+
+
+/* --- Blockquote -------------------------------------------- */
+
+blockquote {
+  margin: 1.25rem 0;
+  padding: 0.25rem 0 0.25rem 1rem;
+  border-left: 3px solid var(--color-border);
+  color: var(--color-text-muted);
+}
+
+
+/* --- Post cards (list pages) ------------------------------- */
+
+article {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+article:last-of-type {
+  border-bottom: none;
+}
+
+article h2, article h3 {
+  margin: 0 0 0.25rem;
+}
+
+
+/* --- Profile block (homepage) ------------------------------ */
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin: 0 0 2.5rem;
+}
+
+.profile-image {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.profile-header h1 {
+  margin: 0 0 0.25rem;
+}
+
+.profile-header p {
+  margin: 0.25rem 0;
+}
+
+
+/* --- Post navigation --------------------------------------- */
+
+.post-nav {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+  font-size: 0.9rem;
+}
+
+.post-nav .next {
+  margin-left: auto;
+  text-align: right;
+}
+
+
+/* --- Responsive -------------------------------------------- */
+
+@media (max-width: 500px) {
+  h1 { font-size: 1.5rem; }
+
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+  }
+}
