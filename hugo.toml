@@ -1,0 +1,76 @@
+baseURL = "https://paloblanco.github.io/"
+locale = "en-us"
+title = "Rocco Panella"
+theme = "PaperMod"
+paginate = 10
+
+enableRobotsTXT = true
+buildDrafts = false
+buildFuture = false
+buildExpired = false
+
+[markup.goldmark.renderer]
+unsafe = true
+
+[params]
+env = "production"
+title = "Rocco Panella"
+description = "Practical data science, coding, and engineering"
+author = "Rocco Panella"
+defaultTheme = "auto"
+
+ShowReadingTime = true
+ShowShareButtons = false
+ShowPostNavLinks = true
+ShowBreadCrumbs = true
+ShowCodeCopyButtons = true
+ShowWordCount = false
+ShowRssButtonInSectionTermList = true
+ShowFullTextinRSS = true
+
+[params.profileMode]
+enabled = true
+title = "Rocco Panella"
+subtitle = "Practical data science, coding, and engineering"
+imageUrl = "/images/Rocco.jpg"
+imageWidth = 160
+imageHeight = 160
+imageTitle = "Rocco Panella"
+
+[[params.profileMode.buttons]]
+name = "Posts"
+url = "/posts"
+
+[[params.profileMode.buttons]]
+name = "Resume"
+url = "/resume"
+
+[[params.profileMode.buttons]]
+name = "Games & Toys"
+url = "/games"
+
+[[params.socialIcons]]
+name = "linkedin"
+url = "https://www.linkedin.com/in/rocco-panella/"
+
+[[params.socialIcons]]
+name = "github"
+url = "https://github.com/paloblanco"
+
+[[menu.main]]
+identifier = "posts"
+name = "Posts"
+url = "/posts/"
+weight = 10
+
+[[menu.main]]
+identifier = "resume"
+name = "Resume"
+url = "/resume/"
+weight = 20
+
+[[menu.main]]
+identifier = "games"
+name = "Games"
+url = "/games/"
+weight = 30
