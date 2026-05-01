@@ -1,0 +1,46 @@
+{{ define "main" }}
+<div class="profile-header">
+    {{ with .Site.Params.profileImage }}
+    <img src="{{ . }}" alt="{{ $.Site.Params.author }}" class="profile-image">
+    {{ end }}
+    <div>
+        <h1>{{ .Site.Params.author }}</h1>
+        <p>{{ .Site.Params.description }}</p>
+        <p>
+            {{ with .Site.Params.socialLinks.linkedin }}
+            <a href="{{ . }}">LinkedIn</a>
+            {{ end }}
+            {{ with .Site.Params.socialLinks.github }}
+            · <a href="{{ . }}">GitHub</a>
+            {{ end }}
+            · <a href="/resume/">Resume</a>
+        </p>
+    </div>
+</div>
+
+{{ with .Content }}
+<section>
+    {{ . }}
+</section>
+{{ end }}
+
+{{ $posts := where .Site.RegularPages "Type" "posts" }}
+{{ if $posts }}
+<h2>Recent Posts</h2>
+{{ range first 5 $posts }}
+<article class="post-entry">
+    {{ with .Params.cover.image }}
+    <img src="{{ . }}" alt="{{ $.Params.cover.alt }}" class="post-thumb">
+    {{ end }}
+    <div>
+        <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+        {{ if .Description }}<p>{{ .Description }}</p>{{ end }}
+        <small>{{ .Date.Format "January 2, 2006" }}</small>
+    </div>
+</article>
+{{ end }}
+{{ if gt (len $posts) 5 }}
+<p><a href="/posts/">View all posts →</a></p>
+{{ end }}
+{{ end }}
+{{ end }}

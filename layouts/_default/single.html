@@ -1,0 +1,27 @@
+{{ define "main" }}
+<article>
+    {{ with .Params.cover.image }}
+    <img src="{{ . }}" alt="{{ $.Params.cover.alt }}" class="cover-image">
+    {{ end }}
+    <header>
+        <h1>{{ .Title }}</h1>
+        <p>
+            <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
+            {{ with .Params.tags }}
+            · {{ range . }}<a href="{{ "/tags/" | relURL }}{{ . | urlize }}/">#{{ . }}</a> {{ end }}
+            {{ end }}
+        </p>
+    </header>
+
+    {{ .Content }}
+</article>
+
+<nav class="post-nav">
+    {{ with .PrevInSection }}
+    <a href="{{ .RelPermalink }}">← {{ .Title }}</a>
+    {{ end }}
+    {{ with .NextInSection }}
+    <a class="next" href="{{ .RelPermalink }}">{{ .Title }} →</a>
+    {{ end }}
+</nav>
+{{ end }}

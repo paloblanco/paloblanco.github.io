@@ -1,0 +1,36 @@
+baseURL = "https://paloblanco.github.io/"
+locale = "en-us"
+title = "Rocco Panella"
+paginate = 10
+
+enableRobotsTXT = true
+
+[markup.goldmark.renderer]
+unsafe = true
+
+[params]
+author = "Rocco Panella"
+description = "Practical data science, coding, and engineering"
+profileImage = "/images/Rocco.jpg"
+
+[params.socialLinks]
+linkedin = "https://www.linkedin.com/in/rocco-panella/"
+github = "https://github.com/paloblanco"
+
+[[menu.main]]
+identifier = "posts"
+name = "Posts"
+url = "/posts/"
+weight = 10
+
+[[menu.main]]
+identifier = "resume"
+name = "Resume"
+url = "/resume/"
+weight = 20
+
+[[menu.main]]
+identifier = "games"
+name = "Games & Toys"
+url = "/games/"
+weight = 30

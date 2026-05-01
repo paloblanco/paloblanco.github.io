@@ -1,0 +1,23 @@
+{{ define "main" }}
+{{ with .Params.cover.image }}
+<img src="{{ . }}" alt="{{ $.Params.cover.alt }}" class="cover-image">
+{{ end }}
+<h1>{{ .Title }}</h1>
+
+{{ with .Content }}
+<section>{{ . }}</section>
+{{ end }}
+
+{{ range .Pages.ByDate.Reverse }}
+<article class="post-entry">
+    {{ with .Params.cover.image }}
+    <img src="{{ . }}" alt="{{ $.Params.cover.alt }}" class="post-thumb">
+    {{ end }}
+    <div>
+        <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+        {{ if .Description }}<p>{{ .Description }}</p>{{ end }}
+        <small>{{ .Date.Format "January 2, 2006" }}</small>
+    </div>
+</article>
+{{ end }}
+{{ end }}
