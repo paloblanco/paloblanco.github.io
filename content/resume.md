@@ -15,12 +15,11 @@ Practical data scientist specializing in digital transformation in chemical engi
 
 ### Bridgestone — Akron, OH — Lead Data Tools Developer — Feb 2023 - Present
 
-- Lead developer for machine learning digital twin for new tire tread material development.
+- Lead developer for machine learning digital twin for new tire tread material development. Implemented modern CICD practices on project.
 - Impact on product development: Enabled product development acceleration to plant by 1 lab iteration (accelerating project timelines by 2-3 months) for several products following introduction of new platform features.
 - Platform improvements: Drove 30x user interactions with digital twin over 1.5 years. Number of digital experiments increased 10<sup>5</sup>. Reverse problem flow (suggest products based on targets) developed and launched.
 - Technical impact: Collaborated with IT to develop inference API for internal ML service. Reduced API costs by 5× by proposing and implementing an AWS Lambda-based architecture.
 - Implemented physics-based multi-task learning via PyTorch. Developed ML models predicting 50+ material properties from formulations. Reduced model training time from 20+ hours to 15 minutes.
-- Modernized software development process. Established git-flow methodology, implemented package and environment management with pip and venv, secured project repository on Azure DevOps. Reduced codebase size by 5× via refactoring and code reviews.
 - Responsible for management of 30+ users, addressing feedback and concerns about system accuracy and usability.
 
 ### Columbia University, 2U — Instructor for Data Science Boot Camp — Feb 2023 - Aug 2023
