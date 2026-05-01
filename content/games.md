@@ -1,5 +1,6 @@
 ---
 title: "Games & Toys"
+date: 2025-01-01
 url: "/games/"
 summary: "Games, interactive toys, and experiments"
 ---
